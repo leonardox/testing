@@ -1,0 +1,396 @@
+openapi: 3.0.3
+info:
+  title: IPL Tracking - Data Microservice API
+  description: API description for Tracking microservice.
+  version: 1.0.0
+servers:
+- url: http://localhost:8083/tracking
+  description: Localhost - BT3 Dev
+tags:
+- name: Commons
+  description: Commons definition
+paths:
+  /geo-data:
+    get:
+      tags:
+      - Geo Data
+      summary: Get Geo data list
+      description: This operation is used to retrieve a list of Geo Data.
+      operationId: list_geo_data
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListGeoDataResponse'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Unexpected errors not mapped to status codes mentioned above
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-openapi-router-controller: swagger_server.controllers.geo_data_controller
+    post:
+      tags:
+      - Geo Data
+      summary: Create new Geo Data
+      description: This operation is usedto create a new Geo Data on System.
+      operationId: create_geo_data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGeoDataRequest'
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateGeoDataResponse'
+        "400":
+          description: Parameters missing in request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "409":
+          description: There is already a geo data registered with same id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Unexpected errors not mapped to status codes mentioned above
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-openapi-router-controller: swagger_server.controllers.geo_data_controller
+  /customers/{customerId}:
+    get:
+      tags:
+      - Geo Data
+      summary: Get a single Geo Data's info
+      description: This operation is used to retrieve the details of a specific geo data.
+      operationId: get_geo_data
+      parameters:
+      - name: dataId
+        in: path
+        description: Unique identifier of the GeoData in the database
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/UUID'
+        example: 0af401df-7d7a-1f36-817d-7b0a058d0003
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetGeoDataResponse'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Geo Data not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Unexpected errors not mapped to status codes mentioned above
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-openapi-router-controller: swagger_server.controllers.geo_data_controller
+    delete:
+      tags:
+      - Geo Data
+      summary: Delete Geo Data
+      description: This operation is delete a Geo Data.
+      operationId: delete_geo_data
+      parameters:
+      - name: dataId
+        in: path
+        description: Unique identifier of the Geo Data in the database
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/UUID'
+        example: 0af401df-7d7a-1f36-817d-7b0a058d0003
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Geo Data not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "409":
+          description: Delete a customer that has vehicles is not allowed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Unexpected errors not mapped to status codes mentioned above
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-openapi-router-controller: swagger_server.controllers.geo_data_controller
+    # put:
+    #   tags:
+    #   - Geo Data
+    #   summary: Update Geo Data's attributes
+    #   description: This operation is used to update some of the Geo Data's attributes.
+    #   operationId: update_geo_data
+    #   parameters:
+    #   - name: dataId
+    #     in: path
+    #     description: Unique identifier of the Geo Data in the database
+    #     required: true
+    #     style: simple
+    #     explode: false
+    #     schema:
+    #       $ref: '#/components/schemas/UUID'
+    #     example: 0af401df-7d7a-1f36-817d-7b0a058d0003
+    #   requestBody:
+    #     content:
+    #       application/json:
+    #         schema:
+    #           $ref: '#/components/schemas/UpdateGeoDataRequest'
+    #     required: true
+    #   responses:
+    #     "204":
+    #       description: No Content
+    #     "400":
+    #       description: "Parameters missing in request or request is malformed."
+    #       content:
+    #         application/json:
+    #           schema:
+    #             $ref: '#/components/schemas/ErrorResponse'
+    #     "401":
+    #       description: Unauthorized
+    #       content:
+    #         application/json:
+    #           schema:
+    #             $ref: '#/components/schemas/ErrorResponse'
+    #     "403":
+    #       description: Forbidden
+    #       content:
+    #         application/json:
+    #           schema:
+    #             $ref: '#/components/schemas/ErrorResponse'
+    #     "404":
+    #       description: Geo Data not found
+    #       content:
+    #         application/json:
+    #           schema:
+    #             $ref: '#/components/schemas/ErrorResponse'
+    #     "409":
+    #       description: There is already a Geo Data registered with same id
+    #       content:
+    #         application/json:
+    #           schema:
+    #             $ref: '#/components/schemas/ErrorResponse'
+    #     "500":
+    #       description: Unexpected errors not mapped to status codes mentioned above
+    #       content:
+    #         application/json:
+    #           schema:
+    #             $ref: '#/components/schemas/ErrorResponse'
+    #   x-openapi-router-controller: swagger_server.controllers.geo_data_controller
+
+components:
+  schemas:
+    GetGeoDataResponse:
+      required:
+      - data_id
+      - vehicle
+      - data_hora
+      - latitude
+      - longitude
+      type: object
+      properties:
+        data_id:
+          $ref: '#/components/schemas/UUID'
+        vehicle:
+          $ref: '#/components/schemas/UUID'
+        data_hora:
+          type: string
+          example: "13/01/2022 23:31:00"
+        latitude:
+          type: string
+          example: "39.74362"
+        longitude:
+          type: string
+          example: "-8.80705"
+        altimeter:
+          type: string
+          example: "98ft"
+      example:
+        data_id: 0af401df-7d7a-1f36-817d-7b0a058d0003
+        vehicle: 0af401df-7d7a-1f36-917d-7b0a058d0003
+        data_hora: "13/01/2022 23:31:00"
+        latitude: "39.74362"
+        longitude: "-8.80705"
+        altimeter: "98ft"
+    CreateGeoDataRequest:
+      required:
+      - data_id
+      - vehicle
+      - data_hora
+      - latitude
+      - longitude
+      type: object
+      properties:
+        data_id:
+          $ref: '#/components/schemas/UUID'
+        vehicle:
+          $ref: '#/components/schemas/UUID'
+        data_hora:
+          type: string
+          example: "13/01/2022 23:31:00"
+        latitude:
+          type: string
+          example: "39.74362"
+        longitude:
+          type: string
+          example: "-8.80705"
+        altimeter:
+          type: string
+          example: "98ft"
+    CreateGeoDataResponse:
+      required:
+      - dataId
+      type: object
+      properties:
+        dataId:
+          $ref: '#/components/schemas/UUID'
+      example:
+        dataId: 0af401df-7d7a-1f36-817d-7b0a058d0003
+    ListGeoDataResponse:
+      required:
+      - content
+      - totalResults
+      type: object
+      properties:
+        content:
+          type: array
+          description: list of paged items
+          items:
+            $ref: '#/components/schemas/GetGeoDataResponse'
+        totalResults:
+          type: integer
+          description: total number of records
+          format: int64
+          example: 50
+      description: generic paged response
+      example:
+        totalResults: 50
+        content:
+        - data_id: 0af401df-7d7a-1f36-817d-7b0a058d0003
+          vehicle: 0af401df-7d7a-1f36-917d-7b0a058d0003
+          data_hora: "13/01/2022 23:31:00"
+          latitude: "39.74362"
+          longitude: "-8.80705"
+          altimeter: "98ft"
+    EnumSensorType:
+      type: string
+      description: type of Sensor
+      enum:
+      - RPM
+      - ODOMETER
+      - SPEED
+    ErrorResponse:
+      required:
+      - errorCode
+      - errorMessage
+      - errorType
+      type: object
+      properties:
+        code:
+          type: string
+          description: Application error code
+          example: XYZ0001
+        type:
+          $ref: '#/components/schemas/ErrorTypeEnum'
+        message:
+          type: string
+          description: Short error explanation
+          example: Unauthorized
+        details:
+          type: string
+          description: Short error detail
+          example: Parameter X has invalid value
+    ErrorTypeEnum:
+      type: string
+      description: Error Type
+      enum:
+      - PERSISTENCE
+      - BUSINESS
+      - COMMUNICATION
+      - UNKNOWN
+    UUID:
+      pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+      type: string
+      example: 0af401df-7d7a-1f36-817d-7b0a058d0003
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      x-basicInfoFunc: swagger_server.controllers.authorization_controller.check_basicAuth
